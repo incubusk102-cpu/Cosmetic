@@ -115,11 +115,21 @@ export default async function ScanResultPage({ params }: PageProps) {
         ) : null}
       </Card>
 
+      <Card className="border-accent/20 bg-accent/5">
+        <CardTitle>Did this product trigger a reaction?</CardTitle>
+        <CardDescription>
+          Logging it now means the correlations on <Link href="/insights" className="underline">/insights</Link>{" "}
+          get smarter over time.
+        </CardDescription>
+        <div className="mt-3">
+          <Link href={`/reactions/new?product=${product.id}`}>
+            <Button>Log a reaction for this product</Button>
+          </Link>
+        </div>
+      </Card>
+
       <div className="flex flex-wrap gap-2">
         <SaveToggle productId={product.id} initialSaved={product.is_saved} />
-        <Link href={`/reactions/new?product=${product.id}`}>
-          <Button variant="secondary">Log a reaction</Button>
-        </Link>
         <Link href="/scan">
           <Button variant="ghost">Scan another</Button>
         </Link>
