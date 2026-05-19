@@ -24,6 +24,9 @@ export interface Database {
           pdf_exports_used_this_month: number;
           pdf_exports_period: string;
           region: string | null;
+          stripe_customer_id: string | null;
+          stripe_subscription_id: string | null;
+          plan_renews_at: string | null;
         };
         Insert: {
           id: string;
@@ -32,6 +35,9 @@ export interface Database {
           region?: string | null;
           pdf_exports_used_this_month?: number;
           pdf_exports_period?: string;
+          stripe_customer_id?: string | null;
+          stripe_subscription_id?: string | null;
+          plan_renews_at?: string | null;
         };
         Update: {
           id?: string;
@@ -40,6 +46,9 @@ export interface Database {
           region?: string | null;
           pdf_exports_used_this_month?: number;
           pdf_exports_period?: string;
+          stripe_customer_id?: string | null;
+          stripe_subscription_id?: string | null;
+          plan_renews_at?: string | null;
         };
         Relationships: EmptyRelationships;
       };
