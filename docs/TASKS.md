@@ -27,7 +27,7 @@ Conventions:
 
 ### P0 (must-ship)
 
-- [~] **#1** Expose the shared `product_cache` from the new-reaction flow so users can attach to products they haven't personally scanned. Imports the cached product into the user's `products` table on first pick. ([deferred from #5 description](https://github.com/incubusk102-cpu/Cosmetic/pull/5))
+- [~] **#1** Expose the shared `product_cache` from the new-reaction flow so users can attach to products they haven't personally scanned. Imports the cached product into the user's `products` table on first pick. ([PR #8](https://github.com/incubusk102-cpu/Cosmetic/pull/8) — open, CI green; deferred from [PR #5](https://github.com/incubusk102-cpu/Cosmetic/pull/5))
 - [ ] **#2** [intentionally blank — slot reserved if a third P0 surfaces. Update this entry or delete it once the v3 handoff doc is recovered.]
 - [ ] **#3** Loosen `computeCorrelations()` eligibility gates for early/dogfood data. Current production defaults: `minProducts=5`, `minReactedProducts=2`, `minProductOccurrences=3`. Candidate looser values: `3 / 2 / 2`. ([deferred from #6 description](https://github.com/incubusk102-cpu/Cosmetic/pull/6))
 
