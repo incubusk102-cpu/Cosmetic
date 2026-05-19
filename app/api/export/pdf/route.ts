@@ -5,9 +5,14 @@ import { checkPdfQuota, currentPdfExportPeriod, type Plan } from "@/lib/pdf/quot
 import {
   buildReportPdf,
   type ReportAllergen,
+  type ReportCorrelations,
   type ReportProduct,
   type ReportReaction,
 } from "@/lib/pdf/report";
+import {
+  computeCorrelations,
+  type CorrelationInputProduct,
+} from "@/lib/insights/correlations";
 
 // pdf-lib bundles for the browser too, but the route handler runs server-side.
 // Force Node runtime so we can stream bytes back without edge-runtime caveats.
@@ -69,14 +74,14 @@ export async function GET() {
       .order("created_at", { ascending: true }),
     supabase
       .from("products")
-      .select("scanned_at, brand, name, source, last_verdict")
+      .select("id, scanned_at, brand, name, source, last_verdict, ingredients_raw")
       .eq("user_id", user.id)
       .gte("scanned_at", windowStartsAtIso)
       .order("scanned_at", { ascending: false }),
     supabase
       .from("reactions")
       .select(
-        "occurred_at, severity, body_area, symptoms, notes, products(brand, name)",
+        "occurred_at, severity, body_area, symptoms, notes, product_id, products(brand, name)",
       )
       .eq("user_id", user.id)
       .gte("occurred_at", windowStartsAtIso)
@@ -127,6 +132,33 @@ export async function GET() {
   });
 
   // ── 3. Render PDF ───────────────────────────────────────────────────
+  // Compute correlations for Plus users so the PDF can render the
+  // "Top suspicious ingredients" table. Free users see the upsell blurb.
+  let correlations: ReportCorrelations | undefined;
+  if (plan === "plus") {
+    const correlationInput: CorrelationInputProduct[] = (
+      productsRes.data ?? []
+    ).map((row) => ({ id: row.id, ingredients_raw: row.ingredients_raw }));
+    const reactedProductIds = (reactionsRes.data ?? [])
+      .map((r) => (r as { product_id: string | null }).product_id)
+      .filter((id): id is string => Boolean(id));
+    const summary = computeCorrelations(correlationInput, reactedProductIds);
+    correlations = {
+      eligible: summary.eligible,
+      reason: summary.reason,
+      baseRate: summary.baseRate,
+      totalProducts: summary.totalProducts,
+      reactedProducts: summary.reactedProducts,
+      rows: summary.top.map((row) => ({
+        token: row.token,
+        totalCount: row.totalCount,
+        reactedCount: row.reactedCount,
+        reactionRate: row.reactionRate,
+        lift: row.lift,
+      })),
+    };
+  }
+
   const bytes = await buildReportPdf({
     generatedAt: now,
     userLabel: user.email ?? user.id,
@@ -136,6 +168,7 @@ export async function GET() {
     allergens,
     products,
     reactions,
+    correlations,
   });
 
   // ── 4. Persist updated quota counter ────────────────────────────────

@@ -104,6 +104,87 @@ describe("buildReportPdf", () => {
     const bytes = await buildReportPdf(plus);
     expect(bytes.length).toBeGreaterThan(500);
   });
+
+  it("renders an empty-state for plus when correlations are ineligible", async () => {
+    const plus: ReportInput = {
+      ...SAMPLE,
+      plan: "plus",
+      correlations: {
+        eligible: false,
+        reason: "not_enough_reacted_products",
+        baseRate: 0,
+        totalProducts: 4,
+        reactedProducts: 1,
+        rows: [],
+      },
+    };
+    const bytes = await buildReportPdf(plus);
+    expect(bytes.length).toBeGreaterThan(500);
+  });
+
+  it("renders a plus-tier correlations table and grows the byte output", async () => {
+    const plus: ReportInput = {
+      ...SAMPLE,
+      plan: "plus",
+      correlations: {
+        eligible: true,
+        baseRate: 0.5,
+        totalProducts: 8,
+        reactedProducts: 4,
+        rows: [
+          {
+            token: "linalool",
+            totalCount: 5,
+            reactedCount: 4,
+            reactionRate: 0.8,
+            lift: 1.6,
+          },
+          {
+            token: "citronellol",
+            totalCount: 6,
+            reactedCount: 4,
+            reactionRate: 0.6667,
+            lift: 1.33,
+          },
+        ],
+      },
+    };
+    const noTable: ReportInput = { ...plus, correlations: undefined };
+    const withTable = await buildReportPdf(plus);
+    const without = await buildReportPdf(noTable);
+    expect(withTable.length).toBeGreaterThan(500);
+    // The table adds a baseline line + header line + 2 ingredient rows, so
+    // the rendered PDF must be larger than the placeholder-only variant.
+    expect(withTable.length).toBeGreaterThan(without.length);
+  });
+
+  it("ignores correlations on the free tier", async () => {
+    const free: ReportInput = {
+      ...SAMPLE,
+      plan: "free",
+      correlations: {
+        eligible: true,
+        baseRate: 0.5,
+        totalProducts: 8,
+        reactedProducts: 4,
+        rows: [
+          {
+            token: "linalool",
+            totalCount: 5,
+            reactedCount: 4,
+            reactionRate: 0.8,
+            lift: 1.6,
+          },
+        ],
+      },
+    };
+    const noCorr: ReportInput = { ...free, correlations: undefined };
+    const withCorr = await buildReportPdf(free);
+    const without = await buildReportPdf(noCorr);
+    // Free plan shows the upsell blurb regardless of correlations data,
+    // so the two outputs should be ~identical in size.
+    expect(Math.abs(withCorr.length - without.length)).toBeLessThan(50);
+  });
 });
 
 describe("wrapText", () => {
