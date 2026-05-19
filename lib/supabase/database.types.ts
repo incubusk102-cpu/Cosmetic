@@ -22,6 +22,7 @@ export interface Database {
           created_at: string;
           plan: Plan;
           pdf_exports_used_this_month: number;
+          pdf_exports_period: string;
           region: string | null;
         };
         Insert: {
@@ -30,6 +31,7 @@ export interface Database {
           plan?: Plan;
           region?: string | null;
           pdf_exports_used_this_month?: number;
+          pdf_exports_period?: string;
         };
         Update: {
           id?: string;
@@ -37,6 +39,7 @@ export interface Database {
           plan?: Plan;
           region?: string | null;
           pdf_exports_used_this_month?: number;
+          pdf_exports_period?: string;
         };
         Relationships: EmptyRelationships;
       };
