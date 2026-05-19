@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Card, CardDescription, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { getCurrentUser, getSupabaseServerClient } from "@/lib/supabase/server";
+import { AttachProductRow, type ProductOption } from "./AttachProductRow";
 
 export const metadata = { title: "Reactions" };
 
@@ -13,14 +14,22 @@ export default async function ReactionsPage() {
   if (!user) redirect("/login");
 
   const supabase = getSupabaseServerClient();
-  const { data } = await supabase
-    .from("reactions")
-    .select(
-      "id, severity, body_area, symptoms, notes, occurred_at, product_id, products(name, brand)",
-    )
-    .eq("user_id", user.id)
-    .order("occurred_at", { ascending: false })
-    .limit(100);
+  const [reactionsRes, productsRes] = await Promise.all([
+    supabase
+      .from("reactions")
+      .select(
+        "id, severity, body_area, symptoms, notes, occurred_at, product_id, products(name, brand)",
+      )
+      .eq("user_id", user.id)
+      .order("occurred_at", { ascending: false })
+      .limit(100),
+    supabase
+      .from("products")
+      .select("id, name, brand, scanned_at")
+      .eq("user_id", user.id)
+      .order("scanned_at", { ascending: false })
+      .limit(50),
+  ]);
 
   type Row = {
     id: string;
@@ -40,11 +49,18 @@ export default async function ReactionsPage() {
 
   const items: Array<Omit<Row, "products"> & {
     products: { name: string | null; brand: string | null } | null;
-  }> = (data ?? []).map((r) => {
+  }> = (reactionsRes.data ?? []).map((r) => {
     const row = r as Row;
     const product = Array.isArray(row.products) ? row.products[0] ?? null : row.products;
     return { ...row, products: product };
   });
+
+  const productOptions: ProductOption[] = (productsRes.data ?? []).map((p) => ({
+    id: p.id,
+    label:
+      [p.brand, p.name].filter(Boolean).join(" — ") ||
+      `Scanned ${new Date(p.scanned_at).toLocaleDateString()}`,
+  }));
 
   return (
     <div className="space-y-5">
@@ -97,6 +113,9 @@ export default async function ReactionsPage() {
                 </p>
               ) : null}
               {r.notes ? <p className="mt-2 text-sm text-ink-soft">{r.notes}</p> : null}
+              {r.product_id == null ? (
+                <AttachProductRow reactionId={r.id} products={productOptions} />
+              ) : null}
             </li>
           ))}
         </ul>

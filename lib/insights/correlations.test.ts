@@ -137,7 +137,10 @@ describe("computeCorrelations", () => {
     expect(out.top.length).toBe(5);
     // Output is sorted by descending lift.
     for (let i = 1; i < out.top.length; i++) {
-      expect(out.top[i - 1].lift).toBeGreaterThanOrEqual(out.top[i].lift);
+      const prev = out.top[i - 1];
+      const curr = out.top[i];
+      if (!prev || !curr) throw new Error("top row missing");
+      expect(prev.lift).toBeGreaterThanOrEqual(curr.lift);
     }
   });
 
