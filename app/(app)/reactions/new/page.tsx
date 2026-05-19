@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { getCurrentUser, getSupabaseServerClient } from "@/lib/supabase/server";
-import { NewReactionForm } from "./NewReactionForm";
+import { NewReactionForm, type InitialProductSelection } from "./NewReactionForm";
 
 export const metadata = { title: "Log a reaction" };
 
@@ -14,7 +14,7 @@ export default async function NewReactionPage({ searchParams }: PageProps) {
   if (!user) redirect("/login");
 
   const supabase = getSupabaseServerClient();
-  let product: { id: string; name: string | null; brand: string | null } | null = null;
+  let product: InitialProductSelection | null = null;
   if (searchParams.product) {
     const { data } = await supabase
       .from("products")
@@ -36,11 +36,14 @@ export default async function NewReactionPage({ searchParams }: PageProps) {
             {product.brand ? ` (${product.brand})` : ""}.
           </p>
         ) : (
-          <p className="text-sm text-ink-muted">Not linked to a specific product.</p>
+          <p className="text-sm text-ink-muted">
+            Pick any product from the search below, or leave it blank for a
+            general reaction.
+          </p>
         )}
       </header>
       <Card>
-        <NewReactionForm productId={product?.id ?? null} />
+        <NewReactionForm initialProduct={product} />
       </Card>
     </div>
   );
