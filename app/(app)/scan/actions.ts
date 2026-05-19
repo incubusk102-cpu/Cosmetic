@@ -8,7 +8,7 @@ import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 
 type ActionResult =
   | { ok: true; productId: string }
-  | { ok: false; error: string };
+  | { ok: false; error: string; code?: "not_found" | "no_ingredients" };
 
 async function loadUserAllergens(userId: string): Promise<UserAllergenSelection[]> {
   const supabase = getSupabaseServerClient();
@@ -46,11 +46,20 @@ export async function runBarcodeScan(barcode: string): Promise<ActionResult> {
   } else {
     // 2. Cache miss → hit OBF, then write to cache via service role.
     const fetched = await fetchProductByBarcode(barcode);
-    if (!fetched || !fetched.ingredients_raw) {
+    if (!fetched) {
       return {
         ok: false,
+        code: "not_found",
         error:
-          "We couldn't find this product. Try the Manual tab and paste the ingredients list.",
+          "We couldn't find this product. Photograph the ingredients list, or use the Manual tab.",
+      };
+    }
+    if (!fetched.ingredients_raw) {
+      return {
+        ok: false,
+        code: "no_ingredients",
+        error:
+          "We found this product but it has no ingredients on file. Photograph the ingredients list, or paste it on the Manual tab.",
       };
     }
     brand = fetched.brand;
@@ -74,6 +83,7 @@ export async function runBarcodeScan(barcode: string): Promise<ActionResult> {
   if (!ingredients_raw) {
     return {
       ok: false,
+      code: "no_ingredients",
       error: "We found this product but it has no ingredient list yet.",
     };
   }
@@ -101,6 +111,29 @@ export async function runManualScan(args: {
   return finalizeScan({
     userId: user.id,
     source: "manual",
+    barcode: null,
+    brand: null,
+    name: args.productName ?? null,
+    ingredients_raw: ingredients,
+  });
+}
+
+export async function runOcrScan(args: {
+  ingredients: string;
+  productName?: string | null;
+}): Promise<ActionResult> {
+  const user = await getCurrentUser();
+  if (!user) return { ok: false, error: "Not signed in." };
+  const ingredients = args.ingredients.trim();
+  if (!ingredients) {
+    return {
+      ok: false,
+      error: "That photo didn't produce any ingredients. Try better lighting.",
+    };
+  }
+  return finalizeScan({
+    userId: user.id,
+    source: "ocr",
     barcode: null,
     brand: null,
     name: args.productName ?? null,
