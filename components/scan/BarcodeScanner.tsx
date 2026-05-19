@@ -7,24 +7,38 @@ import { Button } from "@/components/ui/Button";
 interface Props {
   onDetected: (barcode: string) => void;
   disabled?: boolean;
+  /**
+   * If the scanner has been running for this many ms without a detection,
+   * `onIdleTimeout` fires. The parent typically uses this to surface an
+   * "is the barcode unreadable? try a photo of the ingredients" CTA.
+   */
+  idleAfterMs?: number;
+  onIdleTimeout?: () => void;
 }
 
 /**
  * Camera-driven barcode reader. Uses @zxing/browser, loaded lazily so the
  * library only ships to clients that actually open the scanner.
  */
-export function BarcodeScanner({ onDetected, disabled = false }: Props) {
+export function BarcodeScanner({
+  onDetected,
+  disabled = false,
+  idleAfterMs,
+  onIdleTimeout,
+}: Props) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [status, setStatus] = useState<"idle" | "starting" | "running" | "denied" | "unsupported">(
     "idle",
   );
   const [error, setError] = useState<string | null>(null);
   const controlsRef = useRef<{ stop: () => void } | null>(null);
+  const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const firedRef = useRef(false);
 
   useEffect(() => {
     return () => {
       controlsRef.current?.stop();
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
     };
   }, []);
 
@@ -50,6 +64,10 @@ export function BarcodeScanner({ onDetected, disabled = false }: Props) {
             const text = result.getText();
             ctrls.stop();
             controlsRef.current = null;
+            if (idleTimerRef.current) {
+              clearTimeout(idleTimerRef.current);
+              idleTimerRef.current = null;
+            }
             setStatus("idle");
             onDetected(text);
           }
@@ -57,6 +75,12 @@ export function BarcodeScanner({ onDetected, disabled = false }: Props) {
       );
       controlsRef.current = controls;
       setStatus("running");
+      if (idleAfterMs && onIdleTimeout) {
+        if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+        idleTimerRef.current = setTimeout(() => {
+          if (!firedRef.current) onIdleTimeout();
+        }, idleAfterMs);
+      }
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       if (/Permission|denied|NotAllowed/i.test(msg)) {
@@ -71,6 +95,10 @@ export function BarcodeScanner({ onDetected, disabled = false }: Props) {
   function stop() {
     controlsRef.current?.stop();
     controlsRef.current = null;
+    if (idleTimerRef.current) {
+      clearTimeout(idleTimerRef.current);
+      idleTimerRef.current = null;
+    }
     setStatus("idle");
   }
 
