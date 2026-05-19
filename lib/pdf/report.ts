@@ -36,6 +36,34 @@ export interface ReportReaction {
   product_label: string | null;
 }
 
+export interface ReportCorrelationRow {
+  /** Normalized ingredient token, e.g. "linalool". */
+  token: string;
+  /** How many of the user's products contain this ingredient. */
+  totalCount: number;
+  /** How many of those products triggered at least one reaction. */
+  reactedCount: number;
+  /** P(reaction | product contains ingredient). */
+  reactionRate: number;
+  /** Lift over baseline reaction rate. Values > 1 are interesting. */
+  lift: number;
+}
+
+export interface ReportCorrelations {
+  /** Did we have enough data to compute meaningful correlations? */
+  eligible: boolean;
+  reason?:
+    | "not_enough_products"
+    | "not_enough_reacted_products"
+    | "no_lift_signal";
+  /** Baseline P(reaction) across all of the user's products. */
+  baseRate: number;
+  totalProducts: number;
+  reactedProducts: number;
+  /** Top correlations by descending lift, already capped by the caller. */
+  rows: ReadonlyArray<ReportCorrelationRow>;
+}
+
 export interface ReportInput {
   generatedAt: Date;
   /** The user's display name or email — shown on the cover only. */
@@ -47,6 +75,12 @@ export interface ReportInput {
   allergens: ReportAllergen[];
   products: ReportProduct[];
   reactions: ReportReaction[];
+  /**
+   * Pre-computed correlations summary. Optional — when omitted the report
+   * falls back to a generic "Plus unlocks correlations" blurb so callers
+   * don't have to wire the engine just to render a free-tier PDF.
+   */
+  correlations?: ReportCorrelations;
 }
 
 const PAGE = { width: 612, height: 792 }; // US Letter, points
@@ -122,14 +156,9 @@ export async function buildReportPdf(input: ReportInput): Promise<Uint8Array> {
   }
   writer.spacer(8);
 
-  writer.section("Correlations summary");
+  writer.section("Top suspicious ingredients");
   if (input.plan === "plus") {
-    writer.body(
-      "Top suspicious ingredients (lift analysis) appear on /insights in the app.",
-    );
-    writer.bodyMuted(
-      "Per-ingredient lift tables ship in a follow-up release.",
-    );
+    renderCorrelations(writer, input.correlations);
   } else {
     writer.body(
       "Plus unlocks per-ingredient correlations: which ingredients show up more often in products you've reacted to than in those you haven't.",
@@ -259,6 +288,46 @@ class Writer {
     }
     this.y -= 2;
   }
+}
+
+function renderCorrelations(writer: Writer, c: ReportCorrelations | undefined) {
+  if (!c) {
+    writer.body(
+      "Top suspicious ingredients (lift analysis) appear on /insights in the app.",
+    );
+    writer.bodyMuted("Per-ingredient lift tables ship in a follow-up release.");
+    return;
+  }
+  if (!c.eligible || c.rows.length === 0) {
+    const reason =
+      c.reason === "not_enough_products"
+        ? "Not enough scanned products yet — keep scanning to unlock this."
+        : c.reason === "not_enough_reacted_products"
+          ? "Not enough reactions linked to a product yet — attach products to reactions on /reactions."
+          : "No ingredient stands out above the baseline reaction rate yet.";
+    writer.body(reason);
+    return;
+  }
+  writer.body(
+    `Baseline reaction rate: ${formatPercent(c.baseRate)} (${c.reactedProducts}/${c.totalProducts} products).`,
+  );
+  writer.bodyMuted(
+    "Lift = P(reaction | ingredient) ÷ baseline. Pattern only — not a diagnosis.",
+  );
+  writer.spacer(4);
+  // Header line. Keep tabular: name (wide) · 3 numeric columns.
+  writer.body("Ingredient · reacted/total · rate · lift");
+  for (const row of c.rows) {
+    const ratio = `${row.reactedCount}/${row.totalCount}`;
+    const rate = formatPercent(row.reactionRate);
+    const lift = `×${row.lift.toFixed(2)}`;
+    writer.body(`${row.token} · ${ratio} · ${rate} · ${lift}`);
+  }
+}
+
+function formatPercent(p: number): string {
+  if (!isFinite(p) || p < 0) return "0%";
+  return `${Math.round(p * 100)}%`;
 }
 
 function displayProduct(p: ReportProduct): string {
