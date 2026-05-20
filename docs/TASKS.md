@@ -27,7 +27,7 @@ Conventions:
 
 ### P0 (must-ship)
 
-- [~] **#1** Expose the shared `product_cache` from the new-reaction flow so users can attach to products they haven't personally scanned. Imports the cached product into the user's `products` table on first pick. ([PR #8](https://github.com/incubusk102-cpu/Cosmetic/pull/8) — open, CI green; deferred from [PR #5](https://github.com/incubusk102-cpu/Cosmetic/pull/5))
+- [x] **#1** Expose the shared `product_cache` from the new-reaction flow so users can attach to products they haven't personally scanned. Imports the cached product into the user's `products` table on first pick. ([#8](https://github.com/incubusk102-cpu/Cosmetic/pull/8); deferred from [#5](https://github.com/incubusk102-cpu/Cosmetic/pull/5))
 - [ ] **#2** [intentionally blank — slot reserved if a third P0 surfaces. Update this entry or delete it once the v3 handoff doc is recovered.]
 - [ ] **#3** Loosen `computeCorrelations()` eligibility gates for early/dogfood data. Current production defaults: `minProducts=5`, `minReactedProducts=2`, `minProductOccurrences=3`. Candidate looser values: `3 / 2 / 2`. ([deferred from #6 description](https://github.com/incubusk102-cpu/Cosmetic/pull/6))
 
@@ -37,6 +37,13 @@ Conventions:
 - [x] Pipe correlations into the Plus-tier PDF export ([#6](https://github.com/incubusk102-cpu/Cosmetic/pull/6))
 - [x] Cancel the user's Stripe subscription when they delete their account ([#7](https://github.com/incubusk102-cpu/Cosmetic/pull/7))
 - [ ] Extend the `AttachProductRow` on `/reactions` to search the global `product_cache` (parallel to v3 P0 #1 but for the existing-reaction case).
+
+## v4 — front door + mobile workflow
+
+### P0 (must-ship)
+
+- [~] Marketing landing page at `/` for anon visitors (replaces the bare redirect-to-login). Self-contained `landing/index.html` mirror for offline / Termux preview. ([this PR](https://github.com/incubusk102-cpu/Cosmetic/pulls))
+- [~] `docs/TERMUX.md` runbook for previewing the landing and running the full app from an Android phone via Termux. ([this PR](https://github.com/incubusk102-cpu/Cosmetic/pulls))
 
 ### P2 (nice-to-have)
 
