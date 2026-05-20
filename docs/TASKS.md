@@ -29,14 +29,14 @@ Conventions:
 
 - [x] **#1** Expose the shared `product_cache` from the new-reaction flow so users can attach to products they haven't personally scanned. Imports the cached product into the user's `products` table on first pick. ([#8](https://github.com/incubusk102-cpu/Cosmetic/pull/8); deferred from [#5](https://github.com/incubusk102-cpu/Cosmetic/pull/5))
 - [ ] **#2** [intentionally blank — slot reserved if a third P0 surfaces. Update this entry or delete it once the v3 handoff doc is recovered.]
-- [~] **#3** Loosen `computeCorrelations()` eligibility gates for early/dogfood data. Shipped defaults: `minProducts=3`, `minReactedProducts=2`, `minProductOccurrences=2` (was `5 / 2 / 3`). `/insights` empty-state copy updated to match. ([this PR](https://github.com/incubusk102-cpu/Cosmetic/pulls); deferred from [#6](https://github.com/incubusk102-cpu/Cosmetic/pull/6))
+- [x] **#3** Loosen `computeCorrelations()` eligibility gates for early/dogfood data. Shipped defaults: `minProducts=3`, `minReactedProducts=2`, `minProductOccurrences=2` (was `5 / 2 / 3`). `/insights` empty-state copy updated to match. ([#10](https://github.com/incubusk102-cpu/Cosmetic/pull/10); deferred from [#6](https://github.com/incubusk102-cpu/Cosmetic/pull/6))
 
 ### P1 (should-ship)
 
 - [x] Attach an existing reaction to one of the user's products from the `/reactions` list, so the correlations engine has data ([#5](https://github.com/incubusk102-cpu/Cosmetic/pull/5))
 - [x] Pipe correlations into the Plus-tier PDF export ([#6](https://github.com/incubusk102-cpu/Cosmetic/pull/6))
 - [x] Cancel the user's Stripe subscription when they delete their account ([#7](https://github.com/incubusk102-cpu/Cosmetic/pull/7))
-- [ ] Extend the `AttachProductRow` on `/reactions` to search the global `product_cache` (parallel to v3 P0 #1 but for the existing-reaction case).
+- [~] Extend the `AttachProductRow` on `/reactions` to search the global `product_cache` (parallel to v3 P0 #1 but for the existing-reaction case). Collapsed by default; auto-expands when the user has zero personal products. Reuses `importUserProductFromCache` so the verdict is recomputed against the user's allergens. ([this PR](https://github.com/incubusk102-cpu/Cosmetic/pulls))
 
 ## v4 — front door + mobile workflow
 
