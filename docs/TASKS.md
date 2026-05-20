@@ -60,9 +60,9 @@ Conventions:
 
 ### P0 (must-ship)
 
-- [ ] Onboarding audit & polish: cap initial allergen picks at 5 to avoid false-Caution fatigue (PLAN §12 risk #4), add a 30-second "how matching works" intro, ensure first scan happens within 90 seconds of signup.
-- [ ] Methodology transparency: render a footnote near the correlations table on `/insights` listing the structural ingredients we filter (water, glycerin, etc.). Link to `docs/METHODOLOGY.md`.
-- [ ] Publish `docs/METHODOLOGY.md` describing the matching rules (verdict grammar, direct vs relative, synonym handling) in plain English. Linked from the marketing site footer.
+- [~] Onboarding audit & polish: cap initial allergen picks at 5 to avoid false-Caution fatigue (PLAN §12 risk #4), add a 30-second "how matching works" intro, ensure first scan happens within 90 seconds of signup. (this PR)
+- [~] Methodology transparency: render a footnote near the correlations table on `/insights` listing the structural ingredients we filter (water, glycerin, etc.). Link to `docs/METHODOLOGY.md`. (this PR)
+- [~] Publish `docs/METHODOLOGY.md` describing the matching rules (verdict grammar, direct vs relative, synonym handling) in plain English. Linked from the marketing site footer. (this PR)
 
 ### P1 (should-ship)
 

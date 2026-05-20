@@ -81,19 +81,43 @@ export interface CorrelationSummary {
   top: CorrelationRow[];
 }
 
-const DEFAULT_IGNORE: ReadonlyArray<string> = [
-  "aqua",
-  "water",
-  "eau",
-  "parfum",
-  "fragrance",
-  "ci 77891",
-  "ci 77491",
-  "ci 77492",
-  "ci 77499",
-  "ci 77019",
-  "mica",
+/**
+ * Structural ingredients filtered out of the correlations table by default.
+ *
+ * These tokens appear in nearly every cosmetic formulation, so flagging them
+ * as "correlated with your reactions" produces noise, not signal. They are
+ * excluded *only* from `/insights` — the matching engine and verdict screen
+ * are unaffected.
+ *
+ * Each entry maps to a short human-readable reason; we surface this on
+ * `/insights` as a "How we computed this" footnote (see PLAN.md §11 v5 P0
+ * and docs/METHODOLOGY.md). Keep this list small and editorial — over-
+ * filtering would hide real correlations.
+ */
+export const STRUCTURAL_FILTER: ReadonlyArray<{
+  token: string;
+  label: string;
+  reason: string;
+}> = [
+  { token: "aqua", label: "Aqua", reason: "Water (INCI name); in virtually every formulation." },
+  { token: "water", label: "Water", reason: "English label for aqua." },
+  { token: "eau", label: "Eau", reason: "French label for aqua." },
+  { token: "parfum", label: "Parfum", reason: "Bulk fragrance umbrella, not a single chemical." },
+  { token: "fragrance", label: "Fragrance", reason: "English label for parfum; track EU 26 allergens individually." },
+  { token: "mica", label: "Mica", reason: "Common mineral filler and shimmer base." },
+  { token: "ci 77891", label: "CI 77891", reason: "Titanium dioxide (white pigment)." },
+  { token: "ci 77491", label: "CI 77491", reason: "Iron oxide red." },
+  { token: "ci 77492", label: "CI 77492", reason: "Iron oxide yellow." },
+  { token: "ci 77499", label: "CI 77499", reason: "Iron oxide black." },
+  { token: "ci 77019", label: "CI 77019", reason: "Mica-based colorant." },
 ];
+
+/** Token-only view of {@link STRUCTURAL_FILTER}; used as the default `ignoreTokens`. */
+export const STRUCTURAL_FILTER_TOKENS: ReadonlyArray<string> = STRUCTURAL_FILTER.map(
+  (e) => e.token,
+);
+
+const DEFAULT_IGNORE: ReadonlyArray<string> = STRUCTURAL_FILTER_TOKENS;
 
 export function computeCorrelations(
   products: ReadonlyArray<CorrelationInputProduct>,
