@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { VerdictWord } from "@/components/ui/VerdictWord";
 import { matchIngredients } from "@/lib/matching/engine";
+import { buildIngredientReportUrl } from "@/lib/report/issueUrl";
 import { getCurrentUser, getSupabaseServerClient } from "@/lib/supabase/server";
 import type { Verdict } from "@/lib/supabase/database.types";
 import { SaveToggle } from "./SaveToggle";
@@ -40,6 +41,26 @@ export default async function ScanResultPage({ params }: PageProps) {
   const result = matchIngredients(product.ingredients_raw ?? "", userAllergens ?? []);
   const verdict: Verdict = result.verdict;
   const headline = HEADLINE[verdict];
+
+  const reportUrl = buildIngredientReportUrl({
+    verdict,
+    product: {
+      brand: product.brand,
+      name: product.name,
+      barcode: product.barcode,
+      ingredientsRaw: product.ingredients_raw,
+    },
+    directMatches: result.directMatches.map((m) => ({
+      label: m.label,
+      matchedToken: m.matchedToken,
+      matchedSynonym: m.matchedSynonym ?? null,
+    })),
+    relativeMatches: result.relativeMatches.map((m) => ({
+      label: m.label,
+      matchedToken: m.matchedToken,
+      matchedSynonym: m.matchedSynonym ?? null,
+    })),
+  });
 
   return (
     <div className="space-y-6">
@@ -138,6 +159,19 @@ export default async function ScanResultPage({ params }: PageProps) {
       <p className="px-1 text-xs text-ink-muted">
         Informational only. Not medical advice or a diagnosis. Consult a licensed dermatologist for
         medical concerns.
+      </p>
+
+      <p className="px-1 text-xs text-ink-muted">
+        Spot a missing synonym or a wrong match?{" "}
+        <a
+          href={reportUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline decoration-dotted underline-offset-2 hover:text-ink-soft"
+        >
+          Report this ingredient set
+        </a>
+        .
       </p>
     </div>
   );

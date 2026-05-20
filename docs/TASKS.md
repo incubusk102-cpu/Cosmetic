@@ -67,7 +67,7 @@ Conventions:
 ### P1 (should-ship)
 
 - [~] Allergen dictionary v2: expand `lib/allergens/data.ts` to cover full EU 26 + the next tier of common suspects (formaldehyde releasers complete, parabens family complete, sulfates expanded, MI/MCI synonyms tightened). Editorial review with a dermatologist consult. (this PR — dermatologist sign-off still pending; promote to [x] after review)
-- [ ] "Report an ingredient" link on every verdict screen → prefilled GitHub issue (PLAN §12 risk #6 mitigation).
+- [~] "Report an ingredient" link on every verdict screen → prefilled GitHub issue (PLAN §12 risk #6 mitigation). (this PR — link rendered on `/scan/result/[id]` under the disclaimer; helper at `lib/report/issueUrl.ts` with co-located Vitest coverage; flip to [x] + (#NN) after merge)
 - [ ] Photo attachments on reactions (Plus only): create `reaction-photos` Supabase Storage bucket, user-scoped RLS, cap at 10/reaction. Wire into `app/(app)/reactions/new/`.
 
 ### P2 (nice-to-have)
