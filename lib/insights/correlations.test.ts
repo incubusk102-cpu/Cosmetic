@@ -182,4 +182,34 @@ describe("computeCorrelations", () => {
     );
     expect(out.eligible).toBe(true);
   });
+
+  it("uses production-default gates (3 / 2 / 2) when called with no options", () => {
+    // Locks in the shipped defaults so a future drift is an explicit
+    // change. Three reacted products + three clear products, every
+    // ingredient appears twice — the minimum that should clear the
+    // 3/2/2 floor.
+    const out = computeCorrelations(
+      [
+        p("r1", "linalool, glycerin"),
+        p("r2", "linalool, citronellol"),
+        p("r3", "linalool, niacinamide"),
+        p("c1", "glycerin, niacinamide"),
+        p("c2", "citronellol, niacinamide"),
+        p("c3", "glycerin, citronellol"),
+      ],
+      ["r1", "r2", "r3"],
+      // No options → uses production defaults.
+    );
+    expect(out.eligible).toBe(true);
+    expect(out.top[0]?.token).toBe("linalool");
+  });
+
+  it("rejects with not_enough_products at the production default floor of 3", () => {
+    const out = computeCorrelations(
+      [p("1", "linalool"), p("2", "linalool")],
+      ["1", "2"],
+    );
+    expect(out.eligible).toBe(false);
+    expect(out.reason).toBe("not_enough_products");
+  });
 });

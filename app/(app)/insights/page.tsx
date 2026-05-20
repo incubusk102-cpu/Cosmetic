@@ -203,7 +203,7 @@ function NotEnoughData({
 }) {
   const copy = {
     not_enough_products:
-      "We need at least 5 scanned products before we can spot patterns. Keep scanning.",
+      "We need at least 3 scanned products before we can spot patterns. Keep scanning.",
     not_enough_reacted_products:
       "Log at least 2 reactions linked to specific products and we'll start surfacing the ingredients they share.",
     no_lift_signal:
