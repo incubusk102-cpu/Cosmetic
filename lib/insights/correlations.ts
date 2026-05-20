@@ -14,13 +14,22 @@
  *
  * Filtering rules (avoid noise / spurious correlations):
  *  - Ignore ingredients that appear in fewer than `minProductOccurrences`
- *    products (default 3).
- *  - Ignore users with `< minProducts` total products (default 5) or
+ *    products (default 2).
+ *  - Ignore users with `< minProducts` total products (default 3) or
  *    `< minReactedProducts` reacted products (default 2). The caller can
  *    inspect `summary.eligible` to decide whether to render the table.
  *  - Ignore "structural" ingredients that show up in basically everything
  *    (water/aqua and basic colorants); we drop them via a default
  *    ignore list to avoid misleading top results.
+ *
+ * The defaults are deliberately looser than a statistical purist would
+ * pick. The product is more useful when a brand-new user with 3 scans
+ * and 2 reactions sees *some* signal than when they see a blank table
+ * for weeks while building a 5-scan history. `minReactedProducts >= 2`
+ * is the one floor we hold: with a single reaction, every ingredient in
+ * that one product gets reactionRate=1.0 which produces wildly inflated
+ * (and meaningless) lifts. Downstream copy already frames the table as
+ * "pattern only — not a diagnosis", which matches the looseness.
  *
  * Pure function: no I/O, no time, fully unit-testable.
  */
@@ -92,9 +101,9 @@ export function computeCorrelations(
   options: CorrelationOptions = {},
 ): CorrelationSummary {
   const {
-    minProducts = 5,
+    minProducts = 3,
     minReactedProducts = 2,
-    minProductOccurrences = 3,
+    minProductOccurrences = 2,
     topN = 10,
     ignoreTokens = DEFAULT_IGNORE,
   } = options;
