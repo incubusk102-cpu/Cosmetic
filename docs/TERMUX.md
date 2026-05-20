@@ -34,6 +34,11 @@ auth, no build step. Use this if you only want to look at the design.
    python -m http.server 8765
    ```
 
+   > If you accidentally `python -m http.server 8765` from the repo
+   > root (`Cosmetic/`) instead of `Cosmetic/landing/`, you'll still
+   > land on the marketing page — the root `index.html` redirects to
+   > `landing/`. No need to restart the server.
+
 5. **Open it in your phone's browser** (Chrome, Firefox, anything):
    ```
    http://127.0.0.1:8765/
