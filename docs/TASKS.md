@@ -36,7 +36,7 @@ Conventions:
 - [x] Attach an existing reaction to one of the user's products from the `/reactions` list, so the correlations engine has data ([#5](https://github.com/incubusk102-cpu/Cosmetic/pull/5))
 - [x] Pipe correlations into the Plus-tier PDF export ([#6](https://github.com/incubusk102-cpu/Cosmetic/pull/6))
 - [x] Cancel the user's Stripe subscription when they delete their account ([#7](https://github.com/incubusk102-cpu/Cosmetic/pull/7))
-- [~] Extend the `AttachProductRow` on `/reactions` to search the global `product_cache` (parallel to v3 P0 #1 but for the existing-reaction case). Collapsed by default; auto-expands when the user has zero personal products. Reuses `importUserProductFromCache` so the verdict is recomputed against the user's allergens. ([this PR](https://github.com/incubusk102-cpu/Cosmetic/pulls))
+- [x] Extend the `AttachProductRow` on `/reactions` to search the global `product_cache` (parallel to v3 P0 #1 but for the existing-reaction case). Collapsed by default; auto-expands when the user has zero personal products. Reuses `importUserProductFromCache` so the verdict is recomputed against the user's allergens. ([#11](https://github.com/incubusk102-cpu/Cosmetic/pull/11))
 
 ## v4 — front door + mobile workflow
 
@@ -47,7 +47,7 @@ Conventions:
 
 ### P1 (should-ship)
 
-- [x] Root-level `index.html` that redirects to `landing/` so `python -m http.server` from the repo root still shows the marketing page on Termux Path A (avoids the bare directory listing when the `cd landing` step is missed). TERMUX.md updated to mention the fallback. ([this PR](https://github.com/incubusk102-cpu/Cosmetic/pulls))
+- [x] Root-level `index.html` that redirects to `landing/` so `python -m http.server` from the repo root still shows the marketing page on Termux Path A (avoids the bare directory listing when the `cd landing` step is missed). TERMUX.md updated to mention the fallback. ([#12](https://github.com/incubusk102-cpu/Cosmetic/pull/12))
 
 ### P2 (nice-to-have)
 
