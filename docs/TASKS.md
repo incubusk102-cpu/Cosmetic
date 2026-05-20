@@ -60,13 +60,13 @@ Conventions:
 
 ### P0 (must-ship)
 
-- [~] Onboarding audit & polish: cap initial allergen picks at 5 to avoid false-Caution fatigue (PLAN §12 risk #4), add a 30-second "how matching works" intro, ensure first scan happens within 90 seconds of signup. (this PR)
-- [~] Methodology transparency: render a footnote near the correlations table on `/insights` listing the structural ingredients we filter (water, glycerin, etc.). Link to `docs/METHODOLOGY.md`. (this PR)
-- [~] Publish `docs/METHODOLOGY.md` describing the matching rules (verdict grammar, direct vs relative, synonym handling) in plain English. Linked from the marketing site footer. (this PR)
+- [x] Onboarding audit & polish: cap initial allergen picks at 5 to avoid false-Caution fatigue (PLAN §12 risk #4), add a 30-second "how matching works" intro, ensure first scan happens within 90 seconds of signup. (#15)
+- [x] Methodology transparency: render a footnote near the correlations table on `/insights` listing the structural ingredients we filter (water, glycerin, etc.). Link to `docs/METHODOLOGY.md`. (#15)
+- [x] Publish `docs/METHODOLOGY.md` describing the matching rules (verdict grammar, direct vs relative, synonym handling) in plain English. Linked from the marketing site footer. (#15)
 
 ### P1 (should-ship)
 
-- [ ] Allergen dictionary v2: expand `lib/allergens/data.ts` to cover full EU 26 + the next tier of common suspects (formaldehyde releasers complete, parabens family complete, sulfates expanded, MI/MCI synonyms tightened). Editorial review with a dermatologist consult.
+- [~] Allergen dictionary v2: expand `lib/allergens/data.ts` to cover full EU 26 + the next tier of common suspects (formaldehyde releasers complete, parabens family complete, sulfates expanded, MI/MCI synonyms tightened). Editorial review with a dermatologist consult. (this PR — dermatologist sign-off still pending; promote to [x] after review)
 - [ ] "Report an ingredient" link on every verdict screen → prefilled GitHub issue (PLAN §12 risk #6 mitigation).
 - [ ] Photo attachments on reactions (Plus only): create `reaction-photos` Supabase Storage bucket, user-scoped RLS, cap at 10/reaction. Wire into `app/(app)/reactions/new/`.
 
