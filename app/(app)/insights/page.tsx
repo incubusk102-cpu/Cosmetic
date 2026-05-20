@@ -1,13 +1,17 @@
 import { redirect } from "next/navigation";
-import { Download, Lock, Sparkles } from "lucide-react";
+import { Download, Info, Lock, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/Card";
 import { getCurrentUser, getSupabaseServerClient } from "@/lib/supabase/server";
 import { currentPdfExportPeriod } from "@/lib/pdf/quota";
 import {
+  STRUCTURAL_FILTER,
   computeCorrelations,
   type CorrelationInputProduct,
 } from "@/lib/insights/correlations";
+
+const METHODOLOGY_URL =
+  "https://github.com/incubusk102-cpu/Cosmetic/blob/devin/1779212353-mvp-scaffold/docs/METHODOLOGY.md";
 
 export const metadata = { title: "Insights" };
 
@@ -117,6 +121,8 @@ export default async function InsightsPage() {
             <CorrelationsTable rows={correlations.top} baseRate={correlations.baseRate} />
           )}
         </div>
+
+        {plan === "plus" ? <MethodologyFootnote /> : null}
       </Card>
 
       <Card>
@@ -193,6 +199,56 @@ function PlusGate() {
         </Button>
       </a>
     </div>
+  );
+}
+
+function MethodologyFootnote() {
+  return (
+    <details className="group mt-4 rounded-xl border border-ink/10 bg-paper-raised">
+      <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-2.5 text-xs font-medium text-ink-soft transition-colors hover:text-ink">
+        <Info className="h-3.5 w-3.5" aria-hidden="true" />
+        <span>How we computed this</span>
+        <span className="ml-auto text-ink-muted group-open:hidden">Show</span>
+        <span className="ml-auto hidden text-ink-muted group-open:inline">Hide</span>
+      </summary>
+      <div className="space-y-3 border-t border-ink/10 px-4 py-3 text-xs text-ink-soft">
+        <p>
+          We use{" "}
+          <span className="font-medium text-ink">lift</span> &mdash; how much more
+          often an ingredient appears in products you reacted to versus your
+          baseline reaction rate. Only ingredients in {"≥2"} of your products
+          and with lift {"> 1"} are shown. Read the full rules in{" "}
+          <a
+            href={METHODOLOGY_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-accent underline decoration-accent/30 underline-offset-2 hover:decoration-accent"
+          >
+            docs/METHODOLOGY.md
+          </a>
+          .
+        </p>
+        <div>
+          <p className="mb-1.5 font-medium text-ink">
+            Structural ingredients we filter out:
+          </p>
+          <ul className="space-y-1">
+            {STRUCTURAL_FILTER.map((entry) => (
+              <li key={entry.token} className="flex flex-wrap gap-x-2">
+                <code className="rounded bg-ink/5 px-1.5 py-0.5 font-mono text-[11px] text-ink">
+                  {entry.label}
+                </code>
+                <span className="text-ink-muted">{entry.reason}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-2 text-ink-muted">
+            These appear in nearly every cosmetic, so flagging them would only
+            produce noise. The verdict screen is unaffected by this filter.
+          </p>
+        </div>
+      </div>
+    </details>
   );
 }
 

@@ -11,7 +11,10 @@ import type { AllergenEntry } from "./types";
  *  - This file is the source of truth — there is no allergens table in the DB.
  */
 export const ALLERGENS: ReadonlyArray<AllergenEntry> = [
-  // ── Fragrance — EU 26 (a representative subset for MVP) ────────────────────
+  // ── Fragrance — EU 26 declarables (Annex III of EC 1223/2009) ──────────────
+  // The 26 substances cosmetic products must declare on-label if present above
+  // 0.001% (leave-on) / 0.01% (rinse-off). Each entry below maps to one of
+  // those 26. Keep this list complete and alphabetized; see docs/METHODOLOGY.md.
   {
     key: "limonene",
     canonical: "Limonene",
@@ -103,6 +106,169 @@ export const ALLERGENS: ReadonlyArray<AllergenEntry> = [
     severity: 2,
     explanation: "Muguet/lily-of-the-valley fragrance compound on the EU 26 list.",
   },
+  // ── Fragrance — EU 26 (v2 expansion, completes the Annex III list) ────────
+  {
+    key: "amyl_cinnamal",
+    canonical: "Amyl Cinnamal",
+    synonyms: ["amyl cinnamal", "amylcinnamaldehyde", "alpha-amyl cinnamaldehyde"],
+    category: "fragrance",
+    eu26: true,
+    severity: 2,
+    explanation: "Jasmine-like fragrance compound on the EU 26 list.",
+  },
+  {
+    key: "amylcinnamyl_alcohol",
+    canonical: "Amylcinnamyl Alcohol",
+    synonyms: ["amylcinnamyl alcohol"],
+    category: "fragrance",
+    eu26: true,
+    severity: 2,
+    explanation: "Floral fragrance alcohol on the EU 26 list.",
+  },
+  {
+    key: "anise_alcohol",
+    canonical: "Anise Alcohol",
+    synonyms: ["anise alcohol", "anisic alcohol", "anisyl alcohol"],
+    category: "fragrance",
+    eu26: true,
+    severity: 2,
+    explanation: "Sweet anise-like fragrance compound on the EU 26 list.",
+  },
+  {
+    key: "benzyl_cinnamate",
+    canonical: "Benzyl Cinnamate",
+    synonyms: ["benzyl cinnamate"],
+    category: "fragrance",
+    eu26: true,
+    severity: 2,
+    explanation: "Balsamic fragrance fixative on the EU 26 list.",
+  },
+  {
+    key: "benzyl_salicylate",
+    canonical: "Benzyl Salicylate",
+    synonyms: ["benzyl salicylate"],
+    category: "fragrance",
+    eu26: true,
+    severity: 2,
+    explanation: "Floral/balsam fragrance compound on the EU 26 list.",
+  },
+  {
+    key: "butylphenyl_methylpropional",
+    canonical: "Butylphenyl Methylpropional (Lilial)",
+    synonyms: ["butylphenyl methylpropional", "lilial", "p-bmhca"],
+    category: "fragrance",
+    eu26: true,
+    severity: 3,
+    explanation:
+      "Lily-of-the-valley fragrance compound; banned in EU cosmetics since 2022 but still found in legacy or non-EU products.",
+  },
+  {
+    key: "cinnamal",
+    canonical: "Cinnamal",
+    synonyms: ["cinnamal", "cinnamaldehyde", "cinnamic aldehyde"],
+    category: "fragrance",
+    eu26: true,
+    severity: 3,
+    explanation: "Cinnamon-bark fragrance compound; a known stronger sensitizer on the EU 26 list.",
+  },
+  {
+    key: "cinnamyl_alcohol",
+    canonical: "Cinnamyl Alcohol",
+    synonyms: ["cinnamyl alcohol", "cinnamic alcohol"],
+    category: "fragrance",
+    eu26: true,
+    severity: 2,
+    explanation: "Hyacinth-like fragrance alcohol on the EU 26 list.",
+  },
+  {
+    key: "farnesol",
+    canonical: "Farnesol",
+    synonyms: ["farnesol"],
+    category: "fragrance",
+    eu26: true,
+    severity: 2,
+    explanation: "Soft floral fragrance compound on the EU 26 list.",
+  },
+  {
+    key: "hexyl_cinnamal",
+    canonical: "Hexyl Cinnamal",
+    synonyms: ["hexyl cinnamal", "alpha-hexyl cinnamaldehyde"],
+    category: "fragrance",
+    eu26: true,
+    severity: 2,
+    explanation: "Jasmine-like fragrance compound on the EU 26 list.",
+  },
+  {
+    key: "hicc",
+    canonical: "Hydroxyisohexyl 3-Cyclohexene Carboxaldehyde (HICC / Lyral)",
+    synonyms: [
+      "hydroxyisohexyl 3-cyclohexene carboxaldehyde",
+      "hicc",
+      "lyral",
+    ],
+    category: "fragrance",
+    eu26: true,
+    severity: 3,
+    explanation:
+      "Strong sensitizer; banned in EU cosmetics since 2021 but still found in legacy products.",
+  },
+  {
+    key: "isoeugenol",
+    canonical: "Isoeugenol",
+    synonyms: ["isoeugenol"],
+    category: "fragrance",
+    eu26: true,
+    severity: 3,
+    explanation: "Clove/spice fragrance compound; a stronger sensitizer on the EU 26 list.",
+  },
+  {
+    key: "isomethyl_ionone",
+    canonical: "alpha-Isomethyl Ionone",
+    synonyms: ["alpha-isomethyl ionone", "isomethyl ionone"],
+    category: "fragrance",
+    eu26: true,
+    severity: 2,
+    explanation: "Violet/iris fragrance compound on the EU 26 list.",
+  },
+  {
+    key: "methyl_2_octynoate",
+    canonical: "Methyl 2-Octynoate",
+    synonyms: ["methyl 2-octynoate", "methyl heptin carbonate"],
+    category: "fragrance",
+    eu26: true,
+    severity: 2,
+    explanation: "Green/violet fragrance compound on the EU 26 list.",
+  },
+  {
+    key: "oakmoss",
+    canonical: "Oakmoss Extract (Evernia Prunastri)",
+    synonyms: [
+      "evernia prunastri extract",
+      "evernia prunastri",
+      "oakmoss extract",
+      "oakmoss",
+    ],
+    category: "fragrance",
+    eu26: true,
+    severity: 3,
+    explanation:
+      "Lichen-derived fragrance fixative; a stronger sensitizer in the EU 26 natural-extract pair.",
+  },
+  {
+    key: "treemoss",
+    canonical: "Treemoss Extract (Evernia Furfuracea)",
+    synonyms: [
+      "evernia furfuracea extract",
+      "evernia furfuracea",
+      "treemoss extract",
+      "treemoss",
+    ],
+    category: "fragrance",
+    eu26: true,
+    severity: 3,
+    explanation:
+      "Lichen-derived fragrance fixative; the second of the EU 26 natural-extract pair.",
+  },
   // ── Fragrance — generic catch-all ─────────────────────────────────────────
   {
     key: "fragrance_generic",
@@ -119,7 +285,12 @@ export const ALLERGENS: ReadonlyArray<AllergenEntry> = [
   {
     key: "methylisothiazolinone",
     canonical: "Methylisothiazolinone (MI)",
-    synonyms: ["methylisothiazolinone"],
+    synonyms: [
+      "methylisothiazolinone",
+      "methyl isothiazolinone",
+      "2-methyl-4-isothiazolin-3-one",
+      "2-methyl-2h-isothiazol-3-one",
+    ],
     category: "preservative",
     eu26: false,
     severity: 3,
@@ -128,11 +299,58 @@ export const ALLERGENS: ReadonlyArray<AllergenEntry> = [
   {
     key: "methylchloroisothiazolinone",
     canonical: "Methylchloroisothiazolinone (MCI)",
-    synonyms: ["methylchloroisothiazolinone"],
+    synonyms: [
+      "methylchloroisothiazolinone",
+      "methylchloro-isothiazolinone",
+      "methylchloro isothiazolinone",
+      "5-chloro-2-methyl-4-isothiazolin-3-one",
+    ],
     category: "preservative",
     eu26: false,
     severity: 3,
     explanation: "Often blended with MI; a known cause of contact dermatitis.",
+  },
+  {
+    key: "benzisothiazolinone",
+    canonical: "Benzisothiazolinone (BIT)",
+    synonyms: [
+      "benzisothiazolinone",
+      "1,2-benzisothiazolin-3-one",
+      "1,2-benzisothiazol-3(2h)-one",
+    ],
+    category: "preservative",
+    eu26: false,
+    severity: 3,
+    explanation:
+      "A third-generation isothiazolinone preservative; cross-reacts with MI/MCI in many patients.",
+  },
+  {
+    key: "octylisothiazolinone",
+    canonical: "Octylisothiazolinone (OIT)",
+    synonyms: [
+      "octylisothiazolinone",
+      "2-octyl-4-isothiazolin-3-one",
+      "2-n-octyl-4-isothiazolin-3-one",
+    ],
+    category: "preservative",
+    eu26: false,
+    severity: 3,
+    explanation:
+      "Isothiazolinone preservative used in industrial coatings; sometimes appears in cosmetics.",
+  },
+  {
+    key: "iodopropynyl_butylcarbamate",
+    canonical: "Iodopropynyl Butylcarbamate (IPBC)",
+    synonyms: [
+      "iodopropynyl butylcarbamate",
+      "3-iodo-2-propynyl butylcarbamate",
+      "ipbc",
+    ],
+    category: "preservative",
+    eu26: false,
+    severity: 2,
+    explanation:
+      "Antifungal preservative; an increasingly common contact-allergy trigger in leave-on products.",
   },
   {
     key: "parabens",
@@ -144,11 +362,14 @@ export const ALLERGENS: ReadonlyArray<AllergenEntry> = [
       "butylparaben",
       "isopropylparaben",
       "isobutylparaben",
+      "benzylparaben",
+      "pentylparaben",
     ],
     category: "preservative",
     eu26: false,
     severity: 2,
-    explanation: "Preservative family; some users prefer to avoid the whole class.",
+    explanation:
+      "Preservative family; some users prefer to avoid the whole class. Iso-/pentyl-/benzyl- variants are banned in EU but appear in older or imported products.",
   },
   {
     key: "formaldehyde_releasers",
@@ -195,6 +416,43 @@ export const ALLERGENS: ReadonlyArray<AllergenEntry> = [
     eu26: false,
     severity: 1,
     explanation: "Milder than SLS but still a common sensitivity trigger for some users.",
+  },
+  {
+    key: "als",
+    canonical: "Ammonium Lauryl Sulfate (ALS)",
+    synonyms: ["ammonium lauryl sulfate"],
+    category: "sulfate",
+    eu26: false,
+    severity: 2,
+    explanation: "A strong surfactant similar to SLS; common in shampoos and body washes.",
+  },
+  {
+    key: "ales",
+    canonical: "Ammonium Laureth Sulfate (ALES)",
+    synonyms: ["ammonium laureth sulfate"],
+    category: "sulfate",
+    eu26: false,
+    severity: 1,
+    explanation: "Milder counterpart to ALS; the ammonium-salt sibling of SLES.",
+  },
+  {
+    key: "sodium_coco_sulfate",
+    canonical: "Sodium Coco Sulfate",
+    synonyms: ["sodium coco sulfate", "sodium coco-sulfate"],
+    category: "sulfate",
+    eu26: false,
+    severity: 2,
+    explanation:
+      "Marketed as a 'natural' alternative but is a coconut-derived blend that contains SLS; expect similar effects.",
+  },
+  {
+    key: "tea_lauryl_sulfate",
+    canonical: "TEA-Lauryl Sulfate",
+    synonyms: ["tea-lauryl sulfate", "tea lauryl sulfate", "triethanolamine lauryl sulfate"],
+    category: "sulfate",
+    eu26: false,
+    severity: 2,
+    explanation: "Triethanolamine-salt sulfate surfactant; similar profile to SLS.",
   },
 
   // ── Retinoids ─────────────────────────────────────────────────────────────
