@@ -45,6 +45,10 @@ Conventions:
 - [x] Marketing landing page at `/` for anon visitors (replaces the bare redirect-to-login). Self-contained `landing/index.html` mirror for offline / Termux preview. ([#9](https://github.com/incubusk102-cpu/Cosmetic/pull/9))
 - [x] `docs/TERMUX.md` runbook for previewing the landing and running the full app from an Android phone via Termux. ([#9](https://github.com/incubusk102-cpu/Cosmetic/pull/9))
 
+### P1 (should-ship)
+
+- [x] Root-level `index.html` that redirects to `landing/` so `python -m http.server` from the repo root still shows the marketing page on Termux Path A (avoids the bare directory listing when the `cd landing` step is missed). TERMUX.md updated to mention the fallback. ([this PR](https://github.com/incubusk102-cpu/Cosmetic/pulls))
+
 ### P2 (nice-to-have)
 
 - [ ] First-class onboarding for the allergen list (the `app/(app)/onboarding/` page exists; audit the flow end-to-end and tighten the empty / partial states).
