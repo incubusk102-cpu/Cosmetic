@@ -54,6 +54,57 @@ Conventions:
 - [ ] First-class onboarding for the allergen list (the `app/(app)/onboarding/` page exists; audit the flow end-to-end and tighten the empty / partial states).
 - [ ] Surface a "structural ingredients we filter out" footnote near the correlations table so the methodology is transparent.
 
+## v5 — trust & growth (per `docs/PLAN.md` §11)
+
+> The strategy doc ([`docs/PLAN.md`](./PLAN.md)) is authoritative. Every entry here is a concrete task derived from it; keep both in sync.
+
+### P0 (must-ship)
+
+- [ ] Onboarding audit & polish: cap initial allergen picks at 5 to avoid false-Caution fatigue (PLAN §12 risk #4), add a 30-second "how matching works" intro, ensure first scan happens within 90 seconds of signup.
+- [ ] Methodology transparency: render a footnote near the correlations table on `/insights` listing the structural ingredients we filter (water, glycerin, etc.). Link to `docs/METHODOLOGY.md`.
+- [ ] Publish `docs/METHODOLOGY.md` describing the matching rules (verdict grammar, direct vs relative, synonym handling) in plain English. Linked from the marketing site footer.
+
+### P1 (should-ship)
+
+- [ ] Allergen dictionary v2: expand `lib/allergens/data.ts` to cover full EU 26 + the next tier of common suspects (formaldehyde releasers complete, parabens family complete, sulfates expanded, MI/MCI synonyms tightened). Editorial review with a dermatologist consult.
+- [ ] "Report an ingredient" link on every verdict screen → prefilled GitHub issue (PLAN §12 risk #6 mitigation).
+- [ ] Photo attachments on reactions (Plus only): create `reaction-photos` Supabase Storage bucket, user-scoped RLS, cap at 10/reaction. Wire into `app/(app)/reactions/new/`.
+
+### P2 (nice-to-have)
+
+- [ ] First 100 users program: tracking sheet outside the repo, but lock the conversion mechanic — free Plus for 6 months in exchange for written reaction-history paragraph.
+- [ ] Dermatologist outreach kit: a printable PDF the clinic can hand patients in the lobby (separate doc, not the user-export PDF).
+
+## v6 — clinical handshake (per `docs/PLAN.md` §11)
+
+### P0 (must-ship)
+
+- [ ] `/for-clinicians` landing page describing how the PDF export saves appointment time.
+- [ ] One-time, expiring read-only share link for a user's reaction log + PDF (clinician never gets the user's account).
+
+### P1 (should-ship)
+
+- [ ] User-initiated iCloud / Google Drive backup: one-button JSON export of `products` + `reactions` + `user_allergens` to the user's own storage.
+
+## v7+ — scale-readiness (per `docs/PLAN.md` §11)
+
+Roadmap only — do not start unless explicitly prioritized:
+
+- [ ] Multi-region Supabase (EU + US); honor `profiles.region`.
+- [ ] Public allergen-dictionary contribution path with editorial review gating.
+- [ ] Affiliate-free "products in your list likely Clear for *your* allergens" engagement view.
+
+---
+
+## Continuity rule
+
+`docs/PLAN.md`, `docs/STACK.md`, and this file are the project's institutional memory across rotating agent sessions. See `docs/STACK.md` §16 for the hard rules. The short version:
+
+- **Never delete a shipped entry from this file.** Cancelled work → `[!] dropped — <reason>`.
+- **Never wholesale-replace `docs/PLAN.md` or `docs/STACK.md`.** Amend in place.
+- **Every shipping PR updates this file in the same PR.**
+- **Open work lives here, not in chat.** Chat will be summarized away; this file won't.
+
 ---
 
 ## Adding to this file
