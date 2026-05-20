@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
+  STRUCTURAL_FILTER,
+  STRUCTURAL_FILTER_TOKENS,
   computeCorrelations,
   type CorrelationInputProduct,
 } from "./correlations";
@@ -211,5 +213,56 @@ describe("computeCorrelations", () => {
     );
     expect(out.eligible).toBe(false);
     expect(out.reason).toBe("not_enough_products");
+  });
+});
+
+describe("STRUCTURAL_FILTER", () => {
+  it("is non-empty and contains the canonical noise tokens", () => {
+    // Locks in the editorial list. Adding/removing a token is an
+    // intentional change; the test should fail loudly so docs/METHODOLOGY.md
+    // and the /insights footnote stay in sync.
+    expect(STRUCTURAL_FILTER.length).toBeGreaterThan(0);
+    const tokens = STRUCTURAL_FILTER.map((e) => e.token);
+    expect(tokens).toContain("aqua");
+    expect(tokens).toContain("water");
+    expect(tokens).toContain("parfum");
+    expect(tokens).toContain("mica");
+  });
+
+  it("has all-lowercase tokens (so the ignoreSet compare works)", () => {
+    for (const entry of STRUCTURAL_FILTER) {
+      expect(entry.token).toBe(entry.token.toLowerCase());
+      expect(entry.token.trim()).toBe(entry.token);
+    }
+  });
+
+  it("has a non-empty label and reason for every entry", () => {
+    for (const entry of STRUCTURAL_FILTER) {
+      expect(entry.label.length).toBeGreaterThan(0);
+      expect(entry.reason.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("STRUCTURAL_FILTER_TOKENS mirrors STRUCTURAL_FILTER.tokens (no drift)", () => {
+    expect(STRUCTURAL_FILTER_TOKENS).toEqual(STRUCTURAL_FILTER.map((e) => e.token));
+  });
+
+  it("is actually applied as the default ignore list", () => {
+    // Build a history where the only ingredient that would have positive lift
+    // is one of the structural tokens. With default filtering it must be dropped.
+    const out = computeCorrelations(
+      [
+        p("r1", "aqua, linalool"),
+        p("r2", "aqua, linalool"),
+        p("r3", "aqua, citronellol"),
+        p("c1", "aqua, glycerin"),
+        p("c2", "aqua, niacinamide"),
+      ],
+      ["r1", "r2", "r3"],
+      // No `ignoreTokens` override — use the production default.
+      { minProducts: 3, minReactedProducts: 2, minProductOccurrences: 2 },
+    );
+    expect(out.eligible).toBe(true);
+    expect(out.top.find((r) => r.token === "aqua")).toBeUndefined();
   });
 });

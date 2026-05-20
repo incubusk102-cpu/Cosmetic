@@ -46,7 +46,8 @@ export default async function OnboardingPage() {
           What should we help you avoid?
         </h1>
         <p className="text-sm text-ink-muted">
-          Pick anything you&apos;ve reacted to or want to track. You can change this any time.
+          Pick up to 5 to start &mdash; the ones you&apos;ve already reacted to.
+          You can add more any time from Settings.
         </p>
       </header>
 

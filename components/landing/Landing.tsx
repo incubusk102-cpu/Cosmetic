@@ -434,6 +434,13 @@ export function Landing() {
           <div style={{ display: "flex", gap: "1.25rem", flexWrap: "wrap" }}>
             <Link href="/login">Sign in</Link>
             <a
+              href="https://github.com/incubusk102-cpu/Cosmetic/blob/devin/1779212353-mvp-scaffold/docs/METHODOLOGY.md"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Methodology
+            </a>
+            <a
               href="https://github.com/incubusk102-cpu/Cosmetic"
               target="_blank"
               rel="noopener noreferrer"
